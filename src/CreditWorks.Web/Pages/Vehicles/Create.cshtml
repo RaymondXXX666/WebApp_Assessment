@@ -1,0 +1,46 @@
+@page
+@model CreditWorks.Web.Pages.Vehicles.CreateModel
+@{
+    ViewData["Title"] = "Add vehicle";
+}
+
+<h1>Add vehicle</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Input.OwnerName" class="form-label">Owner's name</label>
+        <input asp-for="Input.OwnerName" class="form-control" />
+        <span asp-validation-for="Input.OwnerName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.ManufacturerId" class="form-label">Manufacturer</label>
+        <select asp-for="Input.ManufacturerId"
+                asp-items="Model.Manufacturers"
+                class="form-select">
+            <option value="">Select a manufacturer</option>
+        </select>
+        <span asp-validation-for="Input.ManufacturerId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.YearOfManufacture" class="form-label">Year of manufacture</label>
+        <input asp-for="Input.YearOfManufacture" type="number" class="form-control" />
+        <span asp-validation-for="Input.YearOfManufacture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.WeightKg" class="form-label">Weight (kg)</label>
+        <input asp-for="Input.WeightKg" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="Input.WeightKg" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save vehicle</button>
+    <a asp-page="/Vehicles/Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
