@@ -53,7 +53,11 @@ else
                 <td>@vehicle.Manufacturer</td>
                 <td>@vehicle.YearOfManufacture</td>
                 <td>@vehicle.WeightKg.ToString("0.00")</td>
-                <td>@vehicle.CategoryName</td>
+                <td>
+                    <img src="@Url.Content("~/images/categories/" + vehicle.CategoryIconName)"
+                         alt="" width="40" height="25" class="me-2" />
+                    @vehicle.CategoryName
+                </td>
             </tr>
         }
         </tbody>

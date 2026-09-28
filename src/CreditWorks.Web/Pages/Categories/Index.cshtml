@@ -1,0 +1,122 @@
+@page
+@using System.Globalization
+@model CreditWorks.Web.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>Weight categories</h1>
+<p>
+    Each range includes its minimum and excludes its maximum.
+    Leave only the final category's maximum blank.
+</p>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div id="category-rows">
+        @for (var i = 0; i < Model.Categories.Count; i++)
+        {
+            var category = Model.Categories[i];
+            <div class="category-row row g-2 align-items-end mb-3">
+                <input type="hidden" name="Categories[@i].Id" value="@category.Id" />
+
+                <div class="col-md-3">
+                    <label class="form-label">Name</label>
+                    <input name="Categories[@i].Name" value="@category.Name"
+                           class="form-control" maxlength="100" required />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Icon</label>
+                    <select name="Categories[@i].IconName" class="form-select">
+                        <option value="light.svg" selected="@(category.IconName == "light.svg")">Light</option>
+                        <option value="medium.svg" selected="@(category.IconName == "medium.svg")">Medium</option>
+                        <option value="heavy.svg" selected="@(category.IconName == "heavy.svg")">Heavy</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Minimum kg</label>
+                    <input name="Categories[@i].MinWeightKg"
+                           value="@category.MinWeightKg?.ToString("0.##", CultureInfo.InvariantCulture)"
+                           type="number" min="0" step="0.01"
+                           class="form-control" required />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Maximum kg</label>
+                    <input name="Categories[@i].MaxWeightKg"
+                           value="@category.MaxWeightKg?.ToString("0.##", CultureInfo.InvariantCulture)"
+                           type="number" min="0" step="0.01"
+                           class="form-control" placeholder="No limit" />
+                </div>
+
+                <div class="col-md-2">
+                    <button type="button"
+                            class="remove-category btn btn-outline-danger">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-category" type="button" class="btn btn-outline-primary">
+        Add category
+    </button>
+    <button type="submit" class="btn btn-primary">
+        Save all categories
+    </button>
+</form>
+
+<template id="category-row-template">
+    <div class="category-row row g-2 align-items-end mb-3">
+        <input type="hidden" name="Categories[__INDEX__].Id" value="0" />
+
+        <div class="col-md-3">
+            <label class="form-label">Name</label>
+            <input name="Categories[__INDEX__].Name"
+                   class="form-control" maxlength="100" required />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Icon</label>
+            <select name="Categories[__INDEX__].IconName" class="form-select">
+                <option value="light.svg">Light</option>
+                <option value="medium.svg">Medium</option>
+                <option value="heavy.svg">Heavy</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Minimum kg</label>
+            <input name="Categories[__INDEX__].MinWeightKg"
+                   type="number" min="0" step="0.01"
+                   class="form-control" required />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Maximum kg</label>
+            <input name="Categories[__INDEX__].MaxWeightKg"
+                   type="number" min="0" step="0.01"
+                   class="form-control" placeholder="No limit" />
+        </div>
+
+        <div class="col-md-2">
+            <button type="button"
+                    class="remove-category btn btn-outline-danger">
+                Remove
+            </button>
+        </div>
+    </div>
+</template>
+
+@section Scripts {
+    <script src="~/js/categories.js" asp-append-version="true"></script>
+}

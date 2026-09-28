@@ -56,13 +56,18 @@ public class IndexModel(AppDbContext db) : PageModel
 
         var records = await ordered.ToListAsync();
 
-        Vehicles = records.Select(record => new VehicleRow(
-            record.OwnerName,
-            record.Manufacturer,
-            record.YearOfManufacture,
-            record.WeightKg,
-            WeightCategoryRules.Resolve(record.WeightKg, categories).Name
-        )).ToList();
+        Vehicles = records.Select(record =>
+        {
+            var category = WeightCategoryRules.Resolve(record.WeightKg, categories);
+
+            return new VehicleRow(
+                record.OwnerName,
+                record.Manufacturer,
+                record.YearOfManufacture,
+                record.WeightKg,
+                category.Name,
+                category.IconName);
+        }).ToList();
     }
 
     public record VehicleRow(
@@ -70,5 +75,6 @@ public class IndexModel(AppDbContext db) : PageModel
         string Manufacturer,
         int YearOfManufacture,
         decimal WeightKg,
-        string CategoryName);
+        string CategoryName,
+        string CategoryIconName);
 }
