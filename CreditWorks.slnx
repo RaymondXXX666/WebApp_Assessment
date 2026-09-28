@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CreditWorks.Web/CreditWorks.Web.csproj" />
+  </Folder>
+</Solution>
