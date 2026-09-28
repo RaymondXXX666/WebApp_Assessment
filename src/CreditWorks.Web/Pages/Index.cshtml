@@ -1,10 +1,21 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">CreditWorks Vehicle Manager</h1>
-    <p>Manage vehicles and their weight categories.</p>
-</div>
+<section class="py-5">
+    <h1 class="display-5">CreditWorks Vehicle Register</h1>
+    <p class="lead mt-3">
+        Record vehicles and classify them using configurable weight ranges.
+    </p>
+
+    <div class="d-flex gap-2 mt-4">
+        <a data-swap-page asp-page="/Vehicles/Index" class="btn btn-primary">
+            View vehicles
+        </a>
+        <a data-swap-page asp-page="/Categories/Index" class="btn btn-outline-primary">
+            Manage categories
+        </a>
+    </div>
+</section>
