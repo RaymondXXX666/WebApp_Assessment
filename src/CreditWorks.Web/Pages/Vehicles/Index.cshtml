@@ -2,68 +2,142 @@
 @model CreditWorks.Web.Pages.Vehicles.IndexModel
 @{
     ViewData["Title"] = "Vehicles";
+    var columns = new[]
+    {
+        (Key: "owner", Label: "Owner"),
+        (Key: "manufacturer", Label: "Manufacturer"),
+        (Key: "year", Label: "Year"),
+        (Key: "weight", Label: "Weight (kg)")
+    };
 }
 
 <h1>Vehicles</h1>
-<a asp-page="/Vehicles/Create" class="btn btn-primary mb-3">Add vehicle</a>
+<a data-swap-page asp-page="/Vehicles/Create"
+   class="btn btn-primary mb-3">Add vehicle</a>
 
-@if (Model.Vehicles.Count == 0)
+@if (Model.TotalCount == 0)
 {
     <p>No vehicles have been added yet.</p>
 }
 else
 {
-    <table id="vehicles-table" class="table"
-           data-current-sort="@Model.SortBy"
-           data-current-desc="@Model.Desc.ToString().ToLowerInvariant()">
-        <thead>
-            <tr>
-                <th aria-sort="@(Model.SortBy == "owner" ? (Model.Desc ? "descending" : "ascending") : "none")">
-                    <a data-sort="owner" asp-page="./Index" asp-route-sort="owner"
-                       asp-route-desc="@(Model.SortBy == "owner" && !Model.Desc)">
-                        Owner <span class="sort-indicator">@(Model.SortBy == "owner" ? (Model.Desc ? "▼" : "▲") : "▲")</span>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <span class="text-muted" role="status">
+            Showing @((Model.PageNumber - 1) * Model.PageSize + 1)–@(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount))
+            of @Model.TotalCount vehicles
+        </span>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted">Rows per page</span>
+            <div class="btn-group" role="group" aria-label="Rows per page">
+                @foreach (var size in new[] { 5, 20, 50 })
+                {
+                    <a data-swap-page asp-page="./Index"
+                       asp-route-sort="@Model.SortBy"
+                       asp-route-desc="@Model.Desc"
+                       asp-route-pageNumber="1"
+                       asp-route-pageSize="@size"
+                       class="btn btn-sm @(Model.PageSize == size ? "btn-primary" : "btn-outline-primary")">
+                        @size
                     </a>
-                </th>
-                <th aria-sort="@(Model.SortBy == "manufacturer" ? (Model.Desc ? "descending" : "ascending") : "none")">
-                    <a data-sort="manufacturer" asp-page="./Index" asp-route-sort="manufacturer"
-                       asp-route-desc="@(Model.SortBy == "manufacturer" && !Model.Desc)">
-                        Manufacturer <span class="sort-indicator">@(Model.SortBy == "manufacturer" ? (Model.Desc ? "▼" : "▲") : "▲")</span>
-                    </a>
-                </th>
-                <th aria-sort="@(Model.SortBy == "year" ? (Model.Desc ? "descending" : "ascending") : "none")">
-                    <a data-sort="year" asp-page="./Index" asp-route-sort="year"
-                       asp-route-desc="@(Model.SortBy == "year" && !Model.Desc)">
-                        Year <span class="sort-indicator">@(Model.SortBy == "year" ? (Model.Desc ? "▼" : "▲") : "▲")</span>
-                    </a>
-                </th>
-                <th aria-sort="@(Model.SortBy == "weight" ? (Model.Desc ? "descending" : "ascending") : "none")">
-                    <a data-sort="weight" asp-page="./Index" asp-route-sort="weight"
-                       asp-route-desc="@(Model.SortBy == "weight" && !Model.Desc)">
-                        Weight (kg) <span class="sort-indicator">@(Model.SortBy == "weight" ? (Model.Desc ? "▼" : "▲") : "▲")</span>
-                    </a>
-                </th>
-                <th>Category</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var vehicle in Model.Vehicles)
-        {
-            <tr>
-                <td>@vehicle.OwnerName</td>
-                <td>@vehicle.Manufacturer</td>
-                <td>@vehicle.YearOfManufacture</td>
-                <td>@vehicle.WeightKg.ToString("0.00")</td>
-                <td>
-                    <img src="@Url.Content("~/images/categories/" + vehicle.CategoryIconName)"
-                         alt="" width="40" height="25" class="me-2" />
-                    @vehicle.CategoryName
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
+                }
+            </div>
+        </div>
+    </div>
 
-@section Scripts {
-    <script src="~/js/vehicle-sort.js" asp-append-version="true"></script>
+    <div class="table-responsive">
+        <table id="vehicles-table" class="table">
+            <thead>
+                <tr>
+                    @foreach (var column in columns)
+                    {
+                        var active = Model.SortBy == column.Key;
+                        <th scope="col"
+                            aria-sort="@(active ? (Model.Desc ? "descending" : "ascending") : "none")">
+                            <a data-swap-page asp-page="./Index"
+                               asp-route-sort="@column.Key"
+                               asp-route-desc="@(active && !Model.Desc)"
+                               asp-route-pageNumber="1"
+                               asp-route-pageSize="@Model.PageSize">
+                                @column.Label
+                                <span class="sort-indicator" aria-hidden="true">@(active && Model.Desc ? "▼" : "▲")</span>
+                            </a>
+                        </th>
+                    }
+                    <th scope="col">Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in Model.Vehicles)
+                {
+                    <tr>
+                        <td>@vehicle.OwnerName</td>
+                        <td>@vehicle.Manufacturer</td>
+                        <td>@vehicle.YearOfManufacture</td>
+                        <td>@vehicle.WeightKg.ToString("0.00")</td>
+                        <td>
+                            <img src="@Url.Content("~/images/categories/" + vehicle.CategoryIconName)"
+                                 alt="" width="40" height="25" class="me-2" />
+                            @vehicle.CategoryName
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+        var startPage = Math.Max(1, endPage - 4);
+        endPage = Math.Min(Model.TotalPages, startPage + 4);
+
+        <nav aria-label="Vehicle pages">
+            <ul class="pagination flex-wrap">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    @if (Model.PageNumber == 1)
+                    {
+                        <span class="page-link" aria-disabled="true">Previous</span>
+                    }
+                    else
+                    {
+                        <a data-swap-page class="page-link" asp-page="./Index"
+                           asp-route-sort="@Model.SortBy" asp-route-desc="@Model.Desc"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+                    }
+                </li>
+
+                @for (var number = startPage; number <= endPage; number++)
+                {
+                    <li class="page-item @(number == Model.PageNumber ? "active" : "")">
+                        @if (number == Model.PageNumber)
+                        {
+                            <span class="page-link" aria-current="page">@number</span>
+                        }
+                        else
+                        {
+                            <a data-swap-page class="page-link" asp-page="./Index"
+                               asp-route-sort="@Model.SortBy" asp-route-desc="@Model.Desc"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-pageNumber="@number">@number</a>
+                        }
+                    </li>
+                }
+
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                    @if (Model.PageNumber == Model.TotalPages)
+                    {
+                        <span class="page-link" aria-disabled="true">Next</span>
+                    }
+                    else
+                    {
+                        <a data-swap-page class="page-link" asp-page="./Index"
+                           asp-route-sort="@Model.SortBy" asp-route-desc="@Model.Desc"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
+                    }
+                </li>
+            </ul>
+        </nav>
+    }
 }

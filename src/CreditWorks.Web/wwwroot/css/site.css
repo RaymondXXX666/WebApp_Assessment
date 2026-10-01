@@ -32,3 +32,162 @@ body {
 #vehicles-table th[aria-sort="none"] .sort-indicator {
     color: #adb5bd;
 }
+
+/* CreditWorks interface */
+:root {
+  --cw-ink: #17243a;
+  --cw-muted: #627187;
+  --cw-border: #dce4ee;
+  --cw-surface: #ffffff;
+}
+
+body {
+  background: #f5f7fb;
+  color: var(--cw-ink);
+}
+
+.navbar.navbar-light {
+  background: var(--cw-surface) !important;
+  border-color: var(--cw-border) !important;
+}
+
+.navbar-brand {
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.navbar .nav-link {
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem !important;
+}
+
+.navbar .nav-link:hover {
+  background: #eef4ff;
+  color: #1557b0 !important;
+}
+
+main {
+  padding-top: 1.25rem;
+}
+
+main h1 {
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  margin-bottom: 1rem;
+}
+
+main > p,
+main > section p {
+  color: var(--cw-muted);
+}
+
+#vehicles-table {
+  border: 1px solid var(--cw-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(23, 36, 58, 0.05);
+}
+
+#vehicles-table th,
+#vehicles-table td {
+  padding: 0.9rem 1rem;
+  vertical-align: middle;
+}
+
+#vehicles-table thead th {
+  background: #edf3fb;
+  color: #3b4d66;
+  white-space: nowrap;
+}
+
+#vehicles-table th a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#vehicles-table th a:hover {
+  color: #0d6efd;
+}
+
+#vehicles-table tbody td {
+  background: var(--cw-surface);
+}
+
+#vehicles-table tbody tr:hover td {
+  background: #f3f8ff;
+}
+
+#vehicles-table td img {
+  vertical-align: middle;
+}
+
+#category-rows .category-row {
+  background: var(--cw-surface);
+  border: 1px solid var(--cw-border);
+  border-radius: 12px;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0.9rem;
+  box-shadow: 0 6px 20px rgba(23, 36, 58, 0.04);
+}
+
+#category-rows .form-label {
+  color: var(--cw-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+#category-rows .form-control,
+#category-rows .form-select {
+  border-color: var(--cw-border);
+}
+
+@media (max-width: 767px) {
+  #vehicles-table th,
+  #vehicles-table td {
+    padding: 0.7rem 0.5rem;
+  }
+
+  #category-rows .category-row {
+    padding: 0.8rem;
+  }
+}
+
+.category-icon-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-icon-preview {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.category-icon-picker .form-select {
+  flex: 1;
+  min-width: 0;
+}
+
+#vehicles-table {
+  width: 100%;
+  table-layout: fixed;
+  min-width: 720px;
+}
+
+#vehicles-table th:nth-child(1) { width: 25%; }
+#vehicles-table th:nth-child(2) { width: 22%; }
+#vehicles-table th:nth-child(3) { width: 12%; }
+#vehicles-table th:nth-child(4) { width: 17%; }
+#vehicles-table th:nth-child(5) { width: 24%; }
+
+#vehicles-table td {
+  overflow-wrap: anywhere;
+}
+
+#vehicles-table .sort-indicator {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}

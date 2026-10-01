@@ -20,6 +20,7 @@
             if (!nextMain || !currentMain) throw new Error("Page content missing");
 
             currentMain.replaceWith(document.importNode(nextMain, true));
+            document.dispatchEvent(new Event("creditworks:page-loaded"));
             document.title = page.title;
 
             if (addHistory) history.pushState(null, "", url);
@@ -29,7 +30,7 @@
             document.querySelectorAll("script[data-page-script]").forEach(script => script.remove());
 
             const pageScripts = [...page.querySelectorAll("script[src]")]
-                .filter(script => /\/js\/(vehicle-sort|categories)\.js(?:\?|$)/.test(
+                .filter(script => /\/js\/vehicle-sort\.js(?:\?|$)/.test(
                     new URL(script.getAttribute("src"), url).pathname
                 ));
 
