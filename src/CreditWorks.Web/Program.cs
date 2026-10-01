@@ -1,3 +1,4 @@
+using CreditWorks.Web.Endpoints;
 using CreditWorks.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using CreditWorks.Web.Services;
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<CategoryConfigurationService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
@@ -13,6 +16,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .UseSeeding((context, _) => DatabaseSeeder.Seed(context)));
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -31,5 +40,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+app.MapManufacturerEndpoints();
 
 app.Run();

@@ -77,3 +77,9 @@ The tests cover category boundaries, invalid gaps and overlaps, and the effect o
 ## Implementation notes
 
 The application uses Razor Pages, EF Core 10, and SQL Server. EF Core migrations define the schema. The SQL Server password is stored in .NET User Secrets for local development and is not committed. Client-side sorting and page navigation provide immediate interaction while Razor Pages remain directly accessible by URL.
+
+## Swagger UI
+
+In the Development environment, interactive API documentation is available at http://localhost:5050/swagger.
+
+The OpenAPI document is available at http://localhost:5050/swagger/v1/swagger.json.
