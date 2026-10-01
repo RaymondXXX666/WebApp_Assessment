@@ -15,8 +15,8 @@ If your instance has another name, replace `localhost\SQLEXPRESS` in the connect
 Run in PowerShell:
 
 ```powershell
-git clone https://github.com/RaymondXXX666/CreditWorks.git
-Set-Location CreditWorks
+git clone https://github.com/RaymondXXX666/WebApp_Assessment.git
+Set-Location WebApp_Assessment
 dotnet restore
 dotnet tool restore
 dotnet build --no-restore

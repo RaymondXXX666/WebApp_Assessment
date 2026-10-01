@@ -96,7 +96,7 @@ The known limitations in the design document remain applicable, including absent
 
 A follow-up review on 2 October 2026 checked the submission against the supplied CreditWorks Software Engineer assignment, including the requirement that another developer can clone, configure, migrate, build, run and test it without undocumented steps.
 
-An anonymous clone of `https://github.com/RaymondXXX666/CreditWorks.git` succeeded with Git's credential helper and askpass disabled. Final submission cleanup changes were applied to this independent clone before verification. NuGet dependencies were restored into a new, empty package directory with HTTP cache reuse disabled. The same .NET SDK and local SQL Server instance described above were used, with a new `CreditWorksReview_<guid>` database and a separate loopback port. The application's existing database was not modified.
+Anonymous access to the public repository was verified with Git's credential helper and askpass disabled. The canonical submission URL is `https://github.com/RaymondXXX666/WebApp_Assessment`. Final submission cleanup changes were applied to an independent clone before verification. NuGet dependencies were restored into a new, empty package directory with HTTP cache reuse disabled. The same .NET SDK and local SQL Server instance described above were used, with a new `CreditWorksReview_<guid>` database and a separate loopback port. The application's existing database was not modified.
 
 | Check | Result |
 | --- | --- |

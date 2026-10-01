@@ -69,8 +69,8 @@ The setup commands below use **Bash**. On macOS, run `bash` first if your termin
 The repository is public; cloning does not require a GitHub account:
 
 ```bash
-git clone https://github.com/RaymondXXX666/CreditWorks.git
-cd CreditWorks
+git clone https://github.com/RaymondXXX666/WebApp_Assessment.git
+cd WebApp_Assessment
 dotnet restore
 dotnet tool restore
 dotnet build --no-restore
