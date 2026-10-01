@@ -13,8 +13,6 @@ public class CategoryConfigurationService(AppDbContext db)
             "light.svg", "medium.svg", "heavy.svg"
         };
 
-    private const decimal MaxStoredWeight = 9999999999999999.99m;
-
     public async Task<List<string>> SaveAsync(
         IReadOnlyList<CategoryDraft> drafts,
         CancellationToken cancellationToken = default)
@@ -123,14 +121,14 @@ public class CategoryConfigurationService(AppDbContext db)
         foreach (var draft in drafts)
         {
             if (draft.MinWeightKg is decimal min &&
-                (min < 0m || min > MaxStoredWeight ||
+                (min < 0m || min > WeightLimits.MaximumKg ||
                  decimal.Round(min, 2) != min))
             {
                 errors.Add("Minimum weights must be non-negative with at most two decimal places.");
             }
 
             if (draft.MaxWeightKg is decimal max &&
-                (max > MaxStoredWeight || decimal.Round(max, 2) != max))
+                (max > WeightLimits.MaximumKg || decimal.Round(max, 2) != max))
             {
                 errors.Add("Maximum weights must have at most two decimal places.");
             }

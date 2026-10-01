@@ -13,6 +13,7 @@ public class WeightCategoryRulesTests
     [InlineData("500.00", "Medium")]
     [InlineData("2499.99", "Medium")]
     [InlineData("2500.00", "Heavy")]
+    [InlineData("9999999999999999.99", "Heavy")]
     public void Resolve_UsesExactBoundaries(string weightText, string expectedName)
     {
         var weight = decimal.Parse(weightText, CultureInfo.InvariantCulture);
@@ -65,6 +66,63 @@ public class WeightCategoryRulesTests
 
         Assert.Empty(WeightCategoryRules.Validate(categories));
         Assert.Equal("Heavy", WeightCategoryRules.Resolve(2200m, categories).Name);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Resolve_RejectsNonPositiveWeight(int weight)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => WeightCategoryRules.Resolve(weight, DefaultCategories()));
+    }
+
+    [Theory]
+    [InlineData("empty", "At least one")]
+    [InlineData("missing-start", "start at 0")]
+    [InlineData("negative-start", "negative")]
+    [InlineData("zero-width", "exceed minimum")]
+    [InlineData("reversed-range", "exceed minimum")]
+    [InlineData("finite-end", "no upper limit")]
+    [InlineData("unbounded-middle", "only the final")]
+    public void Validate_RejectsIncompleteOrInvalidRanges(string scenario, string expectedError)
+    {
+        var categories = DefaultCategories();
+        switch (scenario)
+        {
+            case "empty": categories.Clear(); break;
+            case "missing-start": categories[0].MinWeightKg = 1m; break;
+            case "negative-start": categories[0].MinWeightKg = -1m; break;
+            case "zero-width": categories[1].MaxWeightKg = 500m; break;
+            case "reversed-range": categories[1].MaxWeightKg = 400m; break;
+            case "finite-end": categories[2].MaxWeightKg = 10000m; break;
+            case "unbounded-middle": categories[1].MaxWeightKg = null; break;
+        }
+
+        Assert.Contains(WeightCategoryRules.Validate(categories), error => error.Contains(expectedError));
+    }
+
+    [Fact]
+    public void ValidateAndResolve_AcceptUnorderedCategories()
+    {
+        var categories = DefaultCategories();
+        categories.Reverse();
+
+        Assert.Empty(WeightCategoryRules.Validate(categories));
+        Assert.Equal("Medium", WeightCategoryRules.Resolve(500m, categories).Name);
+    }
+
+    [Fact]
+    public void SingleUnboundedCategory_CoversAllValidWeights()
+    {
+        var category = new VehicleCategory
+        {
+            Name = "All vehicles", IconName = "light.svg", MinWeightKg = 0m
+        };
+
+        Assert.Empty(WeightCategoryRules.Validate([category]));
+        Assert.Same(category, WeightCategoryRules.Resolve(0.01m, [category]));
+        Assert.Same(category, WeightCategoryRules.Resolve(9999999999999999.99m, [category]));
     }
 
     private static List<VehicleCategory> DefaultCategories() =>

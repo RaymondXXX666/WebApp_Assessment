@@ -8,7 +8,8 @@ namespace CreditWorks.Web.Pages.Categories;
 
 public class IndexModel(
     AppDbContext db,
-    CategoryConfigurationService categoryService) : PageModel
+    CategoryConfigurationService categoryService,
+    ILogger<IndexModel> logger) : PageModel
 {
     [BindProperty]
     public List<CategoryDraft> Categories { get; set; } = [];
@@ -34,8 +35,18 @@ public class IndexModel(
         if (!ModelState.IsValid)
             return Page();
 
-        var errors = await categoryService.SaveAsync(
-            Categories, HttpContext.RequestAborted);
+        List<string> errors;
+        try
+        {
+            errors = await categoryService.SaveAsync(Categories, HttpContext.RequestAborted);
+        }
+        catch (Exception exception) when (SaveFailureMessages.IsDatabaseFailure(exception))
+        {
+            logger.LogWarning(exception, "Category configuration could not be saved or confirmed.");
+            ModelState.AddModelError(string.Empty,
+                SaveFailureMessages.Describe(exception, saveAttempted: true, "the current category configuration"));
+            return Page();
+        }
 
         if (errors.Count > 0)
         {

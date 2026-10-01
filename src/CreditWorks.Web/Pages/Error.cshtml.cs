@@ -16,5 +16,8 @@ public class ErrorModel : PageModel
     {
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
     }
+
+    // Exception-handler re-execution preserves the original request method.
+    public void OnPost() => OnGet();
 }
 
