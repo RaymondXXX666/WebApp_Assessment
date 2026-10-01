@@ -32,20 +32,20 @@
                            class="form-control" maxlength="100" required />
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Icon</label>
                     <div class="category-icon-picker"
-                     data-icon-base="@Url.Content("~/images/categories/")">
-                    <img class="category-icon-preview"
-                         src="@Url.Content("~/images/categories/" + category.IconName)" alt="" width="48" height="30" />
-                    <select name="Categories[@i].IconName"
-                            class="form-select category-icon-select"
-                            aria-label="Category icon">
-                        <option value="light.svg" selected="@(category.IconName == "light.svg")">Green car</option>
-                        <option value="medium.svg" selected="@(category.IconName == "medium.svg")">Blue van</option>
-                        <option value="heavy.svg" selected="@(category.IconName == "heavy.svg")">Orange truck</option>
-                    </select>
-                </div>
+                         data-icon-base="@Url.Content("~/images/categories/")">
+                        <img class="category-icon-preview"
+                             src="@Url.Content("~/images/categories/" + category.IconName)" alt="" width="48" height="30" />
+                        <select name="Categories[@i].IconName"
+                                class="form-select category-icon-select"
+                                aria-label="Category icon">
+                            <option value="light.svg" selected="@(category.IconName == "light.svg")">Green car</option>
+                            <option value="medium.svg" selected="@(category.IconName == "medium.svg")">Blue van</option>
+                            <option value="heavy.svg" selected="@(category.IconName == "heavy.svg")">Orange truck</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-md-2">
@@ -95,17 +95,17 @@
         <div class="col-md-3">
             <label class="form-label">Icon</label>
             <div class="category-icon-picker"
-                     data-icon-base="@Url.Content("~/images/categories/")">
-                    <img class="category-icon-preview"
-                         src="@Url.Content("~/images/categories/light.svg")" alt="" width="48" height="30" />
-                    <select name="Categories[__INDEX__].IconName"
-                            class="form-select category-icon-select"
-                            aria-label="Category icon">
-                <option value="light.svg">Green car</option>
-                <option value="medium.svg">Blue van</option>
-                <option value="heavy.svg">Orange truck</option>
-            </select>
-                </div>
+                 data-icon-base="@Url.Content("~/images/categories/")">
+                <img class="category-icon-preview"
+                     src="@Url.Content("~/images/categories/light.svg")" alt="" width="48" height="30" />
+                <select name="Categories[__INDEX__].IconName"
+                        class="form-select category-icon-select"
+                        aria-label="Category icon">
+                    <option value="light.svg">Green car</option>
+                    <option value="medium.svg">Blue van</option>
+                    <option value="heavy.svg">Orange truck</option>
+                </select>
+            </div>
         </div>
 
         <div class="col-md-2">

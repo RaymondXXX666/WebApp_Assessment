@@ -81,6 +81,8 @@ Arrows show dependencies/request paths. Page responses are HTML. Successful manu
 
 Enhanced navigation fetches server-rendered HTML and replaces the main content area. URLs remain directly accessible. Sorting and pagination execute on SQL Server. Forms use conventional POST submissions; confirmed saves redirect to a GET page.
 
+The Add vehicle link uses a full page navigation so that the registration form's validation scripts initialize consistently. Category behaviour is loaded globally and initialized again after enhanced navigation.
+
 Category JavaScript adds/removes draft rows, renumbers indexed form fields and previews icons. Draft changes remain in the browser until **Save all categories** is submitted. Server-side validation remains authoritative.
 
 ## 3. Database and indexing design

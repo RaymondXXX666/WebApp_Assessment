@@ -4,6 +4,8 @@
 
 **Result:** Passed for the scope below
 
+**Final reviewer-path check:** Anonymous cloning of the public repository, fresh-package restore, isolated-database initialization, 93 automated tests and 62 additional HTTP checks passed. See the final section for the follow-up review and its scope.
+
 **Related documents:** [README](../README.md), [System Design](SYSTEM_DESIGN.md), [Data Flow](DATA_FLOW.md)
 
 ## Environment and isolation
@@ -89,3 +91,39 @@ This was a focused desktop-browser smoke check. It does not replace a maintained
 - Source/configuration and staged-file review excluded credentials, package caches, compiled output and temporary acceptance artifacts from the submission.
 
 The known limitations in the design document remain applicable, including absent authentication, stale category-form concurrency, and the lack of performance testing. Acceptance does not claim production readiness or a measured performance target.
+
+## Final public-repository review
+
+A follow-up review on 2 October 2026 checked the submission against the supplied CreditWorks Software Engineer assignment, including the requirement that another developer can clone, configure, migrate, build, run and test it without undocumented steps.
+
+An anonymous clone of `https://github.com/RaymondXXX666/CreditWorks.git` succeeded with Git's credential helper and askpass disabled. Final submission cleanup changes were applied to this independent clone before verification. NuGet dependencies were restored into a new, empty package directory with HTTP cache reuse disabled. The same .NET SDK and local SQL Server instance described above were used, with a new `CreditWorksReview_<guid>` database and a separate loopback port. The application's existing database was not modified.
+
+| Check | Result |
+| --- | --- |
+| Public repository access without credentials | Passed |
+| Fresh-package restore and local EF tool restore | Passed |
+| Build after final source cleanup | 0 warnings, 0 errors |
+| Initial and repeated EF migration | Passed; five manufacturers, three categories, zero initial vehicles |
+| Default test suite | 50 passed, 16 opt-in methods skipped |
+| Full SQL-enabled suite | 93 passed, 0 failed, 0 skipped |
+| Additional HTTP acceptance | 62 checks passed |
+| Browser registration and required-field feedback | Passed from the vehicle-list navigation |
+| Browser sorting, pagination and category editing | Passed |
+| Existing 2200 kg vehicle after boundary change to 2000 kg | Displayed as Heavy after returning to the list |
+| Documentation links | Local targets resolved |
+| Cleanup | Temporary application stopped and review database removed |
+
+The 62 HTTP checks covered application routes and assets; initial seed data; antiforgery; required fields; whitespace and overlong owner names; missing manufacturers; invalid years; zero, negative, over-precision and overflowing weights; exact 499.99/500.00/2500.00 boundaries; the maximum storable weight; all four sorting fields in both directions; sorting before pagination; gap/overlap rejection without stored changes; category creation/deletion and icon changes; reclassification; manufacturer CRUD and error responses; and HTML encoding of an owner name containing markup. These checks were performed by a temporary external harness, separate from the 93 maintained tests.
+
+The browser follow-up also confirmed that adding and removing an unsaved category row still works after navigating from the vehicle list. The saved category editor was visually checked for readable fields, icon selectors and save controls.
+
+### Submission cleanup
+
+- Added the exact public clone command and a short review walkthrough to the README.
+- Added a complete native PowerShell/SQL Server Express setup guide, including its environment and permission assumptions.
+- Removed the unused client-side sorting script and its obsolete loader; sorting remains on SQL Server before pagination.
+- Used full navigation for the registration link so its validation scripts load consistently.
+- Removed the unused default Privacy template page and aligned saved/new category-row layouts.
+- Kept credentials, database contents, build output, package caches and temporary acceptance tooling outside the submission.
+
+The execution evidence is for macOS with SQL Server 2022 in a local container. Native Windows/SQL Server Express execution was not performed; that limitation is stated in the [PowerShell guide](WINDOWS_SETUP.md). Reviewers need .NET 10 and a reachable SQL Server 2019+ instance. The repository is source code, not a hosted live application; following the setup guide runs it locally.

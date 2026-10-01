@@ -11,6 +11,7 @@ Users can add vehicles, browse and sort the register, and maintain a complete se
 | [System Design](docs/SYSTEM_DESIGN.md) | Architecture, schema, interfaces, validation, security, decisions and limitations |
 | [Data Flow and Business Processes](docs/DATA_FLOW.md) | Context and process diagrams, registration, classification, category updates and failure paths |
 | [Acceptance Report](docs/ACCEPTANCE_REPORT.md) | Fresh-source build, clean database initialization, automated tests and HTTP/browser acceptance results |
+| [Windows PowerShell setup](docs/WINDOWS_SETUP.md) | Complete setup with a local SQL Server Express instance |
 
 These documents describe the current implementation. Mermaid diagrams render in GitHub's Markdown viewer.
 
@@ -59,15 +60,17 @@ docs/                               Design and data-flow documentation
 - Docker with a running daemon if using the container example; an existing SQL Server instance can also be used.
 - Git.
 
-The setup commands below use **Bash**. On macOS, run `bash` first if your terminal uses zsh. On Windows, use a Bash environment such as WSL, or adapt environment-variable and password-entry commands to PowerShell. The `dotnet` commands themselves are the same.
+The setup commands below use **Bash**. On macOS, run `bash` first if your terminal uses zsh. For native Windows and SQL Server Express, use the [PowerShell setup guide](docs/WINDOWS_SETUP.md). Run the setup commands in the same terminal so that the environment setting remains available.
 
 ## Build and run locally
 
 ### 1. Clone and restore
 
-Clone the repository using its submission URL and change into the repository root. Then run:
+The repository is public; cloning does not require a GitHub account:
 
 ```bash
+git clone https://github.com/RaymondXXX666/CreditWorks.git
+cd CreditWorks
 dotnet restore
 dotnet tool restore
 dotnet build --no-restore
@@ -130,7 +133,7 @@ dotnet ef database update \
   --context AppDbContext
 ```
 
-This creates the schema and invokes the configured seeder. Empty manufacturer and category tables receive their initial values. Seeding does not reset tables that already contain data. The web application does not apply migrations automatically on startup.
+This creates the schema and invokes the configured seeder. A new database contains **five manufacturers, three categories and no vehicles**. Empty manufacturer and category tables receive their initial values. Seeding does not reset tables that already contain data. The web application does not apply migrations automatically on startup.
 
 ### 5. Start the application
 
@@ -146,6 +149,23 @@ The explicit URL and `--no-launch-profile` make this walkthrough independent of 
 Press Ctrl+C to stop the application. Use `docker stop creditworks-sql` to stop the database without removing its volume. Restart the application after changing compiled code when using `dotnet run`.
 
 ## Using the application
+
+### Suggested review walkthrough
+
+Start with a fresh database. The empty vehicle list is expected.
+
+| Step | Action | Expected result |
+| --- | --- | --- |
+| 1 | Add a vehicle with owner `Review Driver`, manufacturer Mazda, year 2020 and weight 2200.00 kg | The vehicle appears as Medium with the blue van icon |
+| 2 | Add vehicles at 499.99, 500.00 and 2500.00 kg | Categories are Light, Medium and Heavy respectively |
+| 3 | Select the Weight heading twice | The full register sorts ascending, then descending; the active arrow changes |
+| 4 | In Categories, set Medium's maximum and Heavy's minimum to 2000, then save | The 2200 kg vehicle displays as Heavy when you return to Vehicles |
+| 5 | Change only Heavy's minimum to 2100 and try saving | A gap error appears; the saved configuration remains unchanged |
+| 6 | Restore that draft minimum to 2000; change Heavy's icon and save | The vehicle list uses the newly selected icon |
+
+To test adding/deleting a category, split an existing range into two adjacent ranges, save, then remove the new range and extend its neighbour to cover it before saving again. Categories are saved together so the database never contains a partly edited configuration.
+
+### Everyday use
 
 1. Open **Vehicles**, select **Add vehicle**, complete all four fields and save.
 2. Select a column heading to sort; select it again to reverse direction. Use pagination to browse the full register.
@@ -205,7 +225,7 @@ The fixture replaces the configured database name with `CreditWorksTests_<guid>`
 
 The latest verification on **2 October 2026** passed **93 tests**, with no failures or skips when integration tests were enabled. This is a verification snapshot, not a fixed required test count.
 
-Coverage includes boundary values, category drafts, vehicle validation and weight limits, SQL sorting and pagination, category persistence, rollback, reclassification, retained input after failures, and timeouts after a vehicle has already been saved. Tests exercise data annotations, page handlers and services; HTTP model binding, antiforgery, browser JavaScript and load testing are not covered.
+Coverage includes boundary values, category drafts, vehicle validation and weight limits, SQL sorting and pagination, category persistence, rollback, reclassification, retained input after failures, and timeouts after a vehicle has already been saved. The maintained test suite exercises data annotations, page handlers and services. Separate HTTP and browser acceptance checks are recorded in the [acceptance report](docs/ACCEPTANCE_REPORT.md); they are not a maintained end-to-end suite. Load testing has not been performed.
 
 ## Design decisions and known limitations
 

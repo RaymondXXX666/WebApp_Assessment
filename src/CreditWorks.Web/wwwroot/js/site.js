@@ -25,25 +25,6 @@
 
             if (addHistory) history.pushState(null, "", url);
             window.scrollTo(0, 0);
-
-            // Scripts inside fetched HTML do not execute automatically.
-            document.querySelectorAll("script[data-page-script]").forEach(script => script.remove());
-
-            const pageScripts = [...page.querySelectorAll("script[src]")]
-                .filter(script => /\/js\/vehicle-sort\.js(?:\?|$)/.test(
-                    new URL(script.getAttribute("src"), url).pathname
-                ));
-
-            for (const original of pageScripts) {
-                const script = document.createElement("script");
-                script.src = new URL(original.getAttribute("src"), url).href;
-                script.dataset.pageScript = "true";
-                await new Promise((resolve, reject) => {
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.body.appendChild(script);
-                });
-            }
         } catch (error) {
             if (error.name !== "AbortError") window.location.assign(url);
         } finally {
